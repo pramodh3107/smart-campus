@@ -1,42 +1,201 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Smart Campus</title>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Campus | Nagarjuna College</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--g:#16a34a;--gd:#166534;--g1:#dcfce7;--d:#111827;--bg:#f2f6f3;--m:#6b7280;--r:16px}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--d)}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}.shell{display:grid;grid-template-columns:235px 1fr;min-height:100vh}aside{background:linear-gradient(180deg,#0d1f15,#111827);color:#cbd5e1;padding:22px 14px;display:flex;flex-direction:column;gap:7px;position:sticky;top:0;height:100vh}.brand{font-weight:800;letter-spacing:.1em;color:white;margin:0 8px 22px}.brand i{font-style:normal;background:linear-gradient(135deg,#22c55e,#15803d);padding:8px;border-radius:12px;margin-right:9px}nav button{width:100%;background:none;border:0;color:#cbd5e1;text-align:left;padding:11px;border-radius:10px;margin:2px 0}nav button:hover,nav button.on{background:var(--g);color:white}.me{margin-top:auto;padding:12px;background:#ffffff14;border-radius:12px;color:white;font-size:13px}.content{padding:28px;max-width:1250px;width:100%}.banner{background:linear-gradient(120deg,#16a34a,#14532d);color:white;padding:24px;border-radius:16px;margin-bottom:20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:14px;margin-bottom:18px}.card,.stat{background:white;border-radius:16px;padding:20px;box-shadow:0 5px 18px #0000000a;margin-bottom:16px}.stat{border-left:4px solid var(--g)}.stat b{font-size:30px;display:block}.muted{color:var(--m);font-size:13px}.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.row>*{flex:1;min-width:130px}input,select,textarea{padding:10px;border:1px solid #d9e0dc;border-radius:9px;width:100%;margin:4px 0;background:white}button.primary{background:linear-gradient(135deg,#22c55e,#15803d);color:white;border:0;border-radius:9px;padding:11px 16px;font-weight:650}button.small{background:var(--g1);color:var(--gd);border:0;border-radius:8px;padding:7px 10px;margin:2px}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:10px;border-bottom:1px solid #edf0ed;vertical-align:top}th{font-size:11px;color:var(--m);text-transform:uppercase}.wrap{overflow:auto}.auth{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr;background:white}.hero{background:linear-gradient(145deg,#16a34a,#0d1f15);color:white;padding:8vw;display:flex;flex-direction:column;justify-content:center}.hero h1{font-size:clamp(38px,6vw,68px);margin:12px 0}.authbox{max-width:420px;width:100%;margin:auto;padding:28px}.authbox h2{font-size:28px}.err{color:#b91c1c}.ok{color:#166534}.tag{padding:4px 8px;border-radius:20px;background:#fef3c7;color:#92400e;font-size:12px}.empty{padding:20px;color:var(--m)}@media(max-width:800px){.shell{grid-template-columns:1fr}aside{position:static;height:auto;padding:10px}nav{display:flex;overflow:auto}nav button{white-space:nowrap;width:auto}.brand{margin:4px}.me{margin-top:6px}.content{padding:14px}.auth{grid-template-columns:1fr}.hero{padding:35px}.hero p{display:none}}
-</style></head><body>
-<div id="auth" class="auth"><section class="hero"><div style="font-size:34px">🌿</div><h1>SMART CAMPUS</h1><h2>A Cleaner Campus. A Smarter Future.</h2><p>Intelligent waste management for Nagarjuna College of Engineering and Technology, Devanahalli.</p><p>AI-assisted · Human-verified · Community-powered</p></section><section class="authbox"><h2 id="authTitle">Welcome back</h2><p class="muted" id="authSub">Sign in to continue</p><form id="authForm"><div id="signupFields" class="hidden"><input name="name" placeholder="Full name"><p class="muted">New registrations receive the Student role. Contact an administrator if you need staff access.</p><input name="dept" placeholder="Department"></div><input name="email" type="email" placeholder="Email" required><input name="password" type="password" placeholder="Password (minimum 8 characters)" minlength="8" required><p id="authMsg" class="err"></p><button class="primary" id="authSubmit" style="width:100%">Sign in</button></form><p><a href="#" id="authSwitch">New here? Register</a></p><p class="muted" id="connectionStatus">Connecting to campus services…</p></section></div>
-<div id="app" class="shell hidden"><aside><div class="brand"><i>🌿</i>SMART<br> CAMPUS</div><nav id="nav"></nav><div class="me"><b id="who"></b><div id="role"></div><button class="small" id="logout">Sign out</button></div></aside><main class="content"><div class="banner"><h2 id="pageTitle">Dashboard</h2><div>A Cleaner Campus. A Smarter Future.</div></div><div id="view"></div><p id="msg" class="err"></p></main></div>
+:root{--g:#16a34a;--gd:#166534;--g1:#dcfce7;--d:#111827;--bg:#f2f6f3;--m:#6b7280;--r:16px}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--d)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+.shell{display:grid;grid-template-columns:245px 1fr;min-height:100vh}
+aside{background:linear-gradient(180deg,#0d1f15,#111827);color:#cbd5e1;padding:22px 14px;display:flex;flex-direction:column;gap:7px;position:sticky;top:0;height:100vh}
+.brand{font-weight:800;letter-spacing:.1em;color:white;margin:0 8px 22px}.brand i{font-style:normal;background:linear-gradient(135deg,#22c55e,#15803d);padding:8px;border-radius:12px;margin-right:9px}
+nav button{width:100%;background:none;border:0;color:#cbd5e1;text-align:left;padding:11px;border-radius:10px;margin:2px 0}nav button:hover,nav button.on{background:var(--g);color:white}
+.me{margin-top:auto;padding:12px;background:#ffffff14;border-radius:12px;color:white;font-size:13px}
+.content{padding:28px;max-width:1350px;width:100%}.banner{background:linear-gradient(120deg,#16a34a,#14532d);color:white;padding:24px;border-radius:16px;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:14px;margin-bottom:18px}
+.card,.stat{background:white;border-radius:16px;padding:20px;box-shadow:0 5px 18px #0000000a;margin-bottom:16px}.stat{border-left:4px solid var(--g)}.stat b{font-size:30px;display:block}
+.muted{color:var(--m);font-size:13px}.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.row>*{flex:1;min-width:130px}
+input,select,textarea{padding:10px;border:1px solid #d9e0dc;border-radius:9px;width:100%;margin:4px 0;background:white}
+button.primary{background:linear-gradient(135deg,#22c55e,#15803d);color:white;border:0;border-radius:9px;padding:11px 16px;font-weight:650}
+button.secondary{background:#e5e7eb;color:#111827;border:0;border-radius:9px;padding:9px 13px}
+button.small{background:var(--g1);color:var(--gd);border:0;border-radius:8px;padding:7px 10px;margin:2px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:10px;border-bottom:1px solid #edf0ed;vertical-align:top}th{font-size:11px;color:var(--m);text-transform:uppercase}
+.wrap{overflow:auto}.auth{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr;background:white}
+.hero{background:linear-gradient(145deg,#16a34a,#0d1f15);color:white;padding:8vw;display:flex;flex-direction:column;justify-content:center}
+.hero h1{font-size:clamp(38px,6vw,68px);margin:12px 0}.authbox{max-width:440px;width:100%;margin:auto;padding:28px}.authbox h2{font-size:28px}
+.err{color:#b91c1c}.ok{color:#166534}.tag{padding:4px 8px;border-radius:20px;background:#fef3c7;color:#92400e;font-size:12px}
+.empty{padding:20px;color:var(--m)}.notice{padding:12px;border-radius:10px;background:#f0fdf4;color:#166534;margin:10px 0}
+.actions{display:flex;gap:6px;flex-wrap:wrap}.photo{max-width:90px;max-height:70px;object-fit:cover;border-radius:8px}
+@media(max-width:800px){.shell{grid-template-columns:1fr}aside{position:static;height:auto;padding:10px}nav{display:flex;overflow:auto}nav button{white-space:nowrap;width:auto}.brand{margin:4px}.me{margin-top:6px}.content{padding:14px}.auth{grid-template-columns:1fr}.hero{padding:35px}.hero p{display:none}}
+</style></head>
+<body>
+<div id="auth" class="auth">
+ <section class="hero"><div style="font-size:34px">🌿</div><h1>SMART CAMPUS</h1><h2>A Cleaner Campus. A Smarter Future.</h2>
+ <p>Intelligent waste management for Nagarjuna College of Engineering and Technology, Devanahalli.</p><p>AI-assisted · Human-verified · Community-powered</p></section>
+ <section class="authbox"><h2 id="authTitle">Welcome back</h2><p class="muted" id="authSub">Sign in to continue</p>
+  <form id="authForm"><div id="signupFields" class="hidden"><input name="name" placeholder="Full name"><p class="muted">Public registration creates a Student account. Staff roles are assigned by an administrator.</p><input name="dept" placeholder="Department"></div>
+   <input name="email" type="email" placeholder="Email" required><input name="password" type="password" placeholder="Password (minimum 8 characters)" minlength="8" required>
+   <p id="authMsg" class="err"></p><button class="primary" id="authSubmit" style="width:100%">Sign in</button>
+  </form><p><a href="#" id="authSwitch">New here? Register</a></p><p class="muted" id="connectionStatus">Connecting to campus services…</p>
+ </section>
+</div>
+<div id="app" class="shell hidden">
+ <aside><div class="brand"><i>🌿</i>SMART<br> CAMPUS</div><nav id="nav"></nav>
+  <div class="me"><b id="who"></b><div id="role"></div><button class="small" id="logout">Sign out</button></div>
+ </aside>
+ <main class="content"><div class="banner"><h2 id="pageTitle">Dashboard</h2><div>A Cleaner Campus. A Smarter Future.</div></div><div id="view"></div><p id="msg" class="err"></p></main>
+</div>
 <script>
-// Replace these two placeholders with your Supabase Project URL and Publishable key.
 const SUPABASE_URL='https://bvkeuhmycguevfmwmgay.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_K4ETzA54Pct3Y8A5wYWq6g_co4s2Dvy';
-const configured=SUPABASE_URL.startsWith('https://') && SUPABASE_PUBLISHABLE_KEY.startsWith('sb_publishable_') && !SUPABASE_URL.includes('YOUR_') && !SUPABASE_PUBLISHABLE_KEY.includes('YOUR_');
+const configured=SUPABASE_URL.startsWith('https://')&&SUPABASE_PUBLISHABLE_KEY.startsWith('sb_publishable_');
 const db=configured?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
 let user=null,profile=null,page='Dashboard',signup=false;
-const $=id=>document.getElementById(id), admin=()=>['admin','super_admin'].includes(profile?.role);
+const $=id=>document.getElementById(id);
+const isSuper=()=>profile?.role==='super_admin';
+const isAdmin=()=>['admin','super_admin'].includes(profile?.role);
+const isHousekeeping=()=>profile?.role==='housekeeping';
+const canManage=()=>isAdmin();
+const roleLabel=()=>String(profile?.role||'student').replaceAll('_',' ');
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function message(t,error=true){$('msg').textContent=t;$('msg').className=error?'err':'ok'}
-function authMode(reg){signup=reg;$('authTitle').textContent=reg?'Create account':'Welcome back';$('authSub').textContent=reg?'Join the campus cleanliness effort':'Sign in to continue';$('signupFields').classList.toggle('hidden',!reg);$('authSubmit').textContent=reg?'Register':'Sign in';$('authSwitch').textContent=reg?'Have an account? Login':'New here? Register';$('authMsg').textContent=''}
+function authMode(reg){signup=reg;$('authTitle').textContent=reg?'Create student account':'Welcome back';$('authSub').textContent=reg?'Join the campus cleanliness effort':'Sign in to continue';$('signupFields').classList.toggle('hidden',!reg);$('authSubmit').textContent=reg?'Register':'Sign in';$('authSwitch').textContent=reg?'Have an account? Login':'New here? Register';$('authMsg').textContent=''}
 $('authSwitch').onclick=e=>{e.preventDefault();authMode(!signup)};
-$('authForm').onsubmit=async e=>{e.preventDefault();if(!configured){$('authMsg').textContent='Add your Supabase Project URL and Publishable Key in index.html first.';return}const f=new FormData(e.target),email=f.get('email'),password=f.get('password');$('authMsg').textContent='Please wait…';try{if(signup){const {data,error}=await db.auth.signUp({email,password,options:{data:{name:f.get('name'),dept:f.get('dept')}}});if(error)throw error;if(data.session){$('authMsg').textContent='Account created. Loading…';await start()}else $('authMsg').textContent='Account created. Check your email if confirmation is enabled.'}else{const {error}=await db.auth.signInWithPassword({email,password});if(error)throw error;await start()}}catch(x){$('authMsg').textContent=x.message}};
+$('authForm').onsubmit=async e=>{
+ e.preventDefault();if(!configured){$('authMsg').textContent='Supabase configuration is missing.';return}
+ const f=new FormData(e.target),email=String(f.get('email')).trim(),password=String(f.get('password'));$('authMsg').textContent='Please wait…';
+ try{
+  if(signup){const {data,error}=await db.auth.signUp({email,password,options:{data:{name:String(f.get('name')||'').trim(),dept:String(f.get('dept')||'').trim()}}});if(error)throw error;
+   $('authMsg').textContent=data.session?'Account created. Loading…':'Account created. Check your email if confirmation is enabled.';if(data.session)await start();
+  }else{const {error}=await db.auth.signInWithPassword({email,password});if(error)throw error;await start()}
+ }catch(x){$('authMsg').textContent=x.message}
+};
 $('logout').onclick=async()=>{await db.auth.signOut();user=null;profile=null;$('app').classList.add('hidden');$('auth').classList.remove('hidden')};
-const pages=['Dashboard','Dustbins','Complaints','Cleaning Tasks','Incidents & AI Alerts','Rewards','Notifications','Users'];
-function shell(){ $('auth').classList.add('hidden');$('app').classList.remove('hidden');$('who').textContent=profile.name||user.email||'Campus user';$('role').textContent=(profile.role||'student').replaceAll('_',' ');$('nav').innerHTML=pages.filter(p=>p!=='Users'||profile.role==='super_admin').map(p=>`<button class="${p===page?'on':''}" data-page="${p}">${({'Dashboard':'📊','Dustbins':'🗑️','Complaints':'📝','Cleaning Tasks':'🧹','Incidents & AI Alerts':'📹','Rewards':'🏆','Notifications':'🔔','Users':'👥'})[p]} ${p}</button>`).join('');$('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{page=b.dataset.page;render()}) }
-async function start(){const {data:{user:u}}=await db.auth.getUser();if(!u)return;user=u;const {data,error}=await db.from('profiles').select('*').eq('id',u.id).single();if(error)throw error;profile=data;page='Dashboard';shell();await render()}
-async function rows(table,order='created_at'){let q=db.from(table).select('*');if(order)q=q.order(order,{ascending:false});const {data,error}=await q;if(error)throw error;return data||[]}
+const rolePages={
+ super_admin:['Dashboard','Create Admin','Dustbins','Complaints','Cleaning Tasks','Incidents & AI Alerts','Rewards','Notifications','Users','Audit Logs'],
+ admin:['Dashboard','Dustbins','Complaints','Cleaning Tasks','Incidents & AI Alerts','Rewards','Notifications','Users'],
+ student:['Dashboard','Dustbins','Report Complaint','My Complaints','Rewards','Notifications'],
+ faculty:['Dashboard','Dustbins','Report Complaint','My Complaints','Cleaning Tasks','Rewards','Notifications'],
+ housekeeping:['Dashboard','My Tasks','Dustbins','Notifications']
+};
+const icons={'Dashboard':'📊','Create Admin':'🛡️','Dustbins':'🗑️','Complaints':'📝','Report Complaint':'✍️','My Complaints':'📋','Cleaning Tasks':'🧹','My Tasks':'🧹','Incidents & AI Alerts':'📹','Rewards':'🏆','Notifications':'🔔','Users':'👥','Audit Logs':'🔐'};
+function shell(){
+ $('auth').classList.add('hidden');$('app').classList.remove('hidden');$('who').textContent=profile?.name||user?.email||'Campus user';$('role').textContent=roleLabel();
+ const allowed=rolePages[profile?.role]||rolePages.student;
+ $('nav').innerHTML=allowed.map(p=>`<button class="${p===page?'on':''}" data-page="${p}">${icons[p]||'•'} ${p}</button>`).join('');
+ $('nav').querySelectorAll('button').forEach(b=>b.onclick=()=>{page=b.dataset.page;render()});
+}
+async function start(){
+ const {data:{user:u},error:uerr}=await db.auth.getUser();if(uerr)throw uerr;if(!u)return;
+ user=u;const {data,error}=await db.from('profiles').select('*').eq('id',u.id).single();if(error)throw error;profile=data;page='Dashboard';shell();await render();
+}
+async function rows(table,order='created_at'){
+ let q=db.from(table).select('*');if(order)q=q.order(order,{ascending:false});const {data,error}=await q;if(error)throw error;return data||[];
+}
 function table(headers,records){if(!records.length)return '<p class="empty">Nothing here yet.</p>';return `<div class="wrap"><table><thead><tr>${headers.map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${records.map(r=>`<tr>${r.map(x=>`<td>${x??'—'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
-function formCard(title,fields,submit){return `<section class="card"><h3>${title}</h3><form id="dataForm" class="row">${fields}<button class="primary">Submit</button></form></section>`}
-async function upload(file){if(!file)return null;const path=`${user.id}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;const {error}=await db.storage.from('campus-photos').upload(path,file);if(error)throw error;const {data}=await db.storage.from('campus-photos').createSignedUrl(path,3600);return data.signedUrl}
-async function render(){shell();$('pageTitle').textContent=page;message('');try{let html='';if(page==='Dashboard'){const [b,c,t,i,p]=await Promise.all([rows('dustbins'),rows('complaints'),rows('cleaning_tasks'),rows('incidents'),rows('profiles')]);const stats=[['Members',p.length],['Dustbins',b.length],['Need collection',b.filter(x=>x.fill>=x.threshold).length],['Open complaints',c.filter(x=>!['resolved','rejected'].includes(x.status)).length],['Pending tasks',t.filter(x=>x.status!=='done').length],['Incidents',i.length]];html=`<div class="grid">${stats.map(s=>`<div class="stat"><b>${s[1]}</b><span class="muted">${s[0]}</span></div>`).join('')}</div><section class="card"><h3>Welcome, ${esc(profile.name)}</h3><p class="muted">Use the navigation to manage campus cleanliness. AI incident records are review items only; this app does not run an AI detection model.</p></section>`}
-if(page==='Dustbins'){const b=await rows('dustbins');html=(admin()?formCard('Register dustbin','<input name="code" placeholder="Bin ID" required><select name="type"><option>dry</option><option>wet</option><option>general</option></select><input name="location" placeholder="Location" required><input name="threshold" type="number" value="80" min="20" max="100">',''): '')+`<section class="card"><h3>Dustbins</h3>${table(['ID','Type','Location','Fill','Status','Update fill'],b.map(x=>[esc(x.code),esc(x.type),esc(x.location),x.fill+'%',esc(x.status),(['housekeeping','admin','super_admin'].includes(profile.role)?`<input type="number" min="0" max="100" value="${x.fill}" data-fill="${x.id}" style="width:85px"><button class="small" data-savefill="${x.id}">Save</button>`:'—')]))}</section>`}
-if(page==='Complaints'){const c=await rows('complaints');html=formCard('Report an issue','<select name="category"><option>Littering</option><option>Overflowing dustbin</option><option>Improper segregation</option><option>Poor drainage</option><option>Rainwater accumulation</option><option>Unclean washroom</option><option>Other</option></select><input name="location" placeholder="Location" required><select name="priority"><option>low</option><option selected>medium</option><option>high</option></select><input name="description" placeholder="Description" required><input type="file" name="photo" accept="image/png,image/jpeg">','')+`<section class="card"><h3>Complaints</h3>${table(['Category','Location','Details','Priority','Status','Reported'],c.map(x=>[esc(x.category),esc(x.location),esc(x.description),esc(x.priority),esc(x.status),new Date(x.created_at).toLocaleString()]))}</section>`}
-if(page==='Cleaning Tasks'){const t=await rows('cleaning_tasks');html=(admin()?formCard('Create task','<input name="title" placeholder="Task title" required><input name="location" placeholder="Location" required><select name="priority"><option>low</option><option selected>medium</option><option>high</option></select>',''):'')+`<section class="card"><h3>Cleaning tasks</h3>${table(['Task','Location','Priority','Status','Assigned to'],t.map(x=>[esc(x.title),esc(x.location),esc(x.priority),esc(x.status),esc(x.assignee_id||'Unassigned')]))}</section>`}
-if(page==='Incidents & AI Alerts'){const i=await rows('incidents');html=(admin()?formCard('Add incident for human review','<input name="camera" placeholder="Camera ID" required><input name="location" placeholder="Location" required><input name="category" value="Littering" required><input name="confidence" type="number" step="0.001" min="0" max="1" placeholder="Confidence (optional)">',''):'')+`<section class="card"><h3>Review queue</h3><p class="muted">This form records an incident for review; it does not perform image recognition.</p>${table(['Camera','Location','Category','Confidence','Source','Status'],i.map(x=>[esc(x.camera),esc(x.location),esc(x.category),x.confidence??'—',esc(x.source),esc(x.status)]))}</section>`}
-if(page==='Rewards'){const p=await rows('profiles','points');html=`<section class="card"><h3>Leaderboard</h3>${table(['Name','Department','Points'],p.sort((a,b)=>b.points-a.points).map(x=>[esc(x.name),esc(x.dept),x.points]))}</section>`}
-if(page==='Notifications'){const n=await rows('notifications');const mine=n.filter(x=>x.user_id===user.id);html=`<section class="card"><h3>Notifications</h3>${table(['Message','Read','When'],mine.map(x=>[esc(x.message),x.is_read?'Yes':'No',new Date(x.created_at).toLocaleString()]))}</section>`}
-if(page==='Users'){const p=await rows('profiles');html=`<section class="card"><h3>Users</h3>${table(['Name','Department','Role','Points'],p.map(x=>[esc(x.name),esc(x.dept),esc(x.role),x.points]))}</section>`}
-$('view').innerHTML=html;bindForms()}catch(e){$('view').innerHTML=`<section class="card err">${esc(e.message)}<p class="muted">Check that the SQL tables, RLS policies and storage bucket are configured.</p></section>`}}
-function bindForms(){const f=$('dataForm');if(f)f.onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(f));try{if(page==='Dustbins'){d.threshold=Number(d.threshold);const {error}=await db.from('dustbins').insert(d);if(error)throw error}if(page==='Complaints'){const photo=await upload(f.elements.photo.files[0]);const {error}=await db.from('complaints').insert({category:d.category,location:d.location,priority:d.priority,description:d.description,reporter_id:user.id,image_url:photo});if(error)throw error}if(page==='Cleaning Tasks'){const {error}=await db.from('cleaning_tasks').insert({title:d.title,location:d.location,priority:d.priority});if(error)throw error}if(page==='Incidents & AI Alerts'){const {error}=await db.from('incidents').insert({camera:d.camera,location:d.location,category:d.category,confidence:d.confidence?Number(d.confidence):null,source:'manual',status:'Under Review'});if(error)throw error}await render();message('Saved successfully.',false)}catch(x){message(x.message)}};
- document.querySelectorAll('[data-savefill]').forEach(b=>b.onclick=async()=>{const id=b.dataset.savefill,input=document.querySelector(`[data-fill="${id}"]`),v=Number(input.value);if(!Number.isFinite(v)||v<0||v>100){message('Fill level must be between 0 and 100.');return}const current=await db.from('dustbins').select('threshold').eq('id',id).single();if(current.error){message(current.error.message);return}const {error}=await db.from('dustbins').update({fill:v,status:v>=Number(current.data.threshold)?'needs collection':'ok'}).eq('id',id);if(error)message(error.message);else render()})}
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-(async()=>{if(!configured){$('connectionStatus').textContent='Setup needed: check the Supabase Project URL and publishable key in index.html.';$('authMsg').textContent='Supabase configuration is missing or invalid.';return}$('connectionStatus').textContent='Supabase configuration loaded.';const {data:{session},error:sessionError}=await db.auth.getSession();if(sessionError){$('connectionStatus').textContent='Could not connect to Supabase: '+sessionError.message;return}if(session){try{await start()}catch(e){$('authMsg').textContent=e.message}}db.auth.onAuthStateChange(async(event,session)=>{if(event==='SIGNED_IN'&&session&&!profile){try{await start()}catch(e){$('authMsg').textContent=e.message}}})})();
+function formCard(title,fields,formId='dataForm'){return `<section class="card"><h3>${title}</h3><form id="${formId}" class="row">${fields}<button class="primary">Submit</button></form></section>`}
+async function upload(file){
+ if(!file)return null;
+ if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Upload a JPG, PNG or WebP image.');
+ if(file.size>5*1024*1024)throw new Error('Image must be smaller than 5 MB.');
+ const path=`${user.id}/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+ const {error}=await db.storage.from('campus-photos').upload(path,file,{contentType:file.type,upsert:false});if(error)throw error;return path;
+}
+async function signedPhoto(path){if(!path)return '—';const {data,error}=await db.storage.from('campus-photos').createSignedUrl(path,1800);if(error)return 'Photo unavailable';return `<a href="${esc(data.signedUrl)}" target="_blank" rel="noopener">View photo</a>`}
+async function profileOptions(role){const {data,error}=await db.from('profiles').select('id,name,dept').eq('role',role).order('name');if(error)throw error;return data||[]}
+function optionList(items){return items.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}${x.dept?' — '+esc(x.dept):''}</option>`).join('')}
+async function render(){
+ shell();$('pageTitle').textContent=page;message('');
+ try{
+  let html='';
+  if(page==='Dashboard'){
+   const [bins,complaints,tasks,incidents]=await Promise.all([rows('dustbins'),rows('complaints'),rows('cleaning_tasks'),rows('incidents')]);
+   let stats=[];
+   if(isSuper()||isAdmin())stats=[['Campus members','profiles'],['Dustbins',bins.length],['Bins needing collection',bins.filter(x=>x.fill>=x.threshold).length],['Open complaints',complaints.filter(x=>!['resolved','rejected'].includes(x.status)).length],['Open tasks',tasks.filter(x=>x.status!=='done').length],['Incidents for review',incidents.length]];
+   else if(isHousekeeping())stats=[['Assigned tasks',tasks.filter(x=>x.assignee_id===user.id).length],['Pending tasks',tasks.filter(x=>x.assignee_id===user.id&&x.status==='pending').length],['Ongoing tasks',tasks.filter(x=>x.assignee_id===user.id&&x.status==='ongoing').length],['Dustbins',bins.length]];
+   else stats=[['Campus dustbins',bins.length],['My complaints',complaints.filter(x=>x.reporter_id===user.id).length],['Resolved complaints',complaints.filter(x=>x.reporter_id===user.id&&x.status==='resolved').length]];
+   const memberCount=(isAdmin()?await db.from('profiles').select('id',{count:'exact',head:true}):{count:null}).count;
+   if(memberCount!==null)stats[0]=['Campus members',memberCount];
+   html=`<div class="grid">${stats.map(s=>`<div class="stat"><b>${s[1]}</b><span class="muted">${s[0]}</span></div>`).join('')}</div>
+   <section class="card"><h3>Welcome, ${esc(profile.name)}</h3><p class="muted">${isSuper()?'You have full campus administration access. Admin creation and role controls are available only to you.':isAdmin()?'Manage campus operations, review complaints and assign cleaning tasks.':isHousekeeping()?'View your assigned work, update task progress and submit completion photos.':'Report campus cleanliness issues and follow their progress.'}</p></section>`;
+  }
+  if(page==='Create Admin'){
+   html=`<section class="card"><h3>Create an Admin account</h3><p class="muted">Only the Super Admin can create Admin accounts. Share the temporary password with the intended Admin securely and ask them to change it after signing in.</p>
+   <form id="adminForm" class="row"><input name="name" placeholder="Full name" required minlength="2" maxlength="100"><input name="email" type="email" placeholder="Email address" required><input name="dept" placeholder="Department" maxlength="100"><input name="temporaryPassword" type="password" placeholder="Temporary password (12+ characters)" minlength="12" required><button class="primary">Create Admin</button></form><p id="adminMsg" class="muted"></p></section>
+   <section class="card"><h3>Admin security</h3><p class="muted">This page calls the protected create-admin Edge Function. The service secret is never sent to the browser. Admins cannot create other Admins or change the Super Admin role.</p></section>`;
+  }
+  if(page==='Dustbins'){
+   const bins=await rows('dustbins');html=(isAdmin()?formCard('Register dustbin','<input name="code" placeholder="Bin ID" required><select name="type"><option value="dry">Dry</option><option value="wet">Wet</option><option value="general">General</option></select><input name="location" placeholder="Location" required><input name="threshold" type="number" value="80" min="20" max="100">'): '')+
+   `<section class="card"><h3>Campus dustbins</h3>${table(['Bin','Type','Location','Fill','Status','Last collected'],bins.map(x=>[esc(x.code),esc(x.type),esc(x.location),`${x.fill}%`,esc(x.status),x.last_collected?new Date(x.last_collected).toLocaleString():'—']))}</section>`;
+  }
+  if(page==='Report Complaint'){
+   html=formCard('Report a campus issue','<select name="category"><option>Littering</option><option>Overflowing dustbin</option><option>Improper segregation</option><option>Poor drainage</option><option>Rainwater accumulation</option><option>Unclean washroom</option><option>Other</option></select><input name="location" placeholder="Location" required><select name="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select><textarea name="description" placeholder="Describe the issue" required></textarea><input type="file" name="photo" accept="image/png,image/jpeg,image/webp">');
+  }
+  if(page==='My Complaints'||page==='Complaints'){
+   const all=await rows('complaints');const list=page==='My Complaints'?all.filter(x=>x.reporter_id===user.id):all;
+   let extra='';
+   if(isAdmin())extra='<p class="muted">Update complaint status or assign it to a housekeeping team member.</p>';
+   const rec=[];
+   for(const x of list){let controls='—';if(isAdmin())controls=`<select data-complaint-status="${x.id}"><option ${x.status==='open'?'selected':''} value="open">Open</option><option ${x.status==='assigned'?'selected':''} value="assigned">Assigned</option><option ${x.status==='resolved'?'selected':''} value="resolved">Resolved</option><option ${x.status==='rejected'?'selected':''} value="rejected">Rejected</option></select><button class="small" data-save-complaint="${x.id}">Save</button>`;
+    rec.push([esc(x.category),esc(x.location),esc(x.description),esc(x.priority),esc(x.status),new Date(x.created_at).toLocaleDateString(),controls]);}
+   html=`<section class="card"><h3>${page}</h3>${extra}${table(['Category','Location','Description','Priority','Status','Reported','Admin actions'],rec)}</section>`;
+  }
+  if(page==='Cleaning Tasks'||page==='My Tasks'){
+   const all=await rows('cleaning_tasks');const list=page==='My Tasks'?all.filter(x=>x.assignee_id===user.id):all;
+   let housekeeping=await profileOptions('housekeeping');
+   const rec=[];
+   for(const x of list){
+    const assignee=isAdmin()?`<select data-assignee="${x.id}"><option value="">Unassigned</option>${optionList(housekeeping).replace(`value="${esc(x.assignee_id)}"`,`value="${esc(x.assignee_id)}" selected`)}</select><button class="small" data-assign="${x.id}">Assign</button>`:esc(x.assignee_id===user.id?profile.name:(x.assignee_id||'Unassigned'));
+    const statusControl=(isHousekeeping()&&x.assignee_id===user.id)?`<select data-task-status="${x.id}"><option value="pending" ${x.status==='pending'?'selected':''}>Pending</option><option value="ongoing" ${x.status==='ongoing'?'selected':''}>Ongoing</option><option value="done" ${x.status==='done'?'selected':''}>Done</option></select><input type="file" data-task-photo="${x.id}" accept="image/png,image/jpeg,image/webp"><button class="small" data-save-task="${x.id}">Update</button>`:esc(x.status);
+    rec.push([esc(x.title),esc(x.location),esc(x.priority),statusControl,assignee]);
+   }
+   html=(isAdmin()?formCard('Create cleaning task','<input name="title" placeholder="Task title" required><input name="location" placeholder="Location" required><select name="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select>'): '')+
+   `<section class="card"><h3>${page}</h3><p class="muted">${isHousekeeping()?'Update your assigned task status and attach a completion photo when marking it done.':isAdmin()?'Assign tasks to housekeeping staff using the assignment controls.':'View campus cleaning tasks.'}</p>${table(['Task','Location','Priority','Status / update','Assignee / assignment'],rec)}</section>`;
+  }
+  if(page==='Incidents & AI Alerts'){
+   const inc=await rows('incidents');html=(isAdmin()?formCard('Add incident for human review','<input name="camera" placeholder="Camera ID" required><input name="location" placeholder="Location" required><input name="category" value="Littering" required><input name="confidence" type="number" step="0.001" min="0" max="1" placeholder="Confidence (optional)">'): '')+
+   `<section class="card"><h3>Incident review queue</h3><p class="muted">Incident records are review items only. This website does not run an AI detection model.</p>${table(['Camera','Location','Category','Confidence','Source','Status'],inc.map(x=>[esc(x.camera),esc(x.location),esc(x.category),x.confidence??'—',esc(x.source),esc(x.status)]))}</section>`;
+  }
+  if(page==='Rewards'){
+   const people=await rows('profiles','points');people.sort((a,b)=>b.points-a.points);html=`<section class="card"><h3>Campus leaderboard</h3>${table(['Name','Department','Points'],people.map(x=>[esc(x.name),esc(x.dept),x.points]))}</section>`;
+  }
+  if(page==='Notifications'){
+   const ns=await rows('notifications');const mine=ns.filter(x=>x.user_id===user.id);html=`<section class="card"><h3>Notifications</h3>${table(['Message','Read','When'],mine.map(x=>[esc(x.message),x.is_read?'Yes':'No',new Date(x.created_at).toLocaleString()]))}</section>`;
+  }
+  if(page==='Users'){
+   const people=await rows('profiles');html=`<section class="card"><h3>Campus users</h3><p class="muted">Role changes are intentionally not offered here. Use a protected Super Admin workflow for privileged role changes.</p>${table(['Name','Department','Role','Points'],people.map(x=>[esc(x.name),esc(x.dept),esc(x.role),x.points]))}</section>`;
+  }
+  if(page==='Audit Logs'){
+   const logs=await rows('audit_logs');html=`<section class="card"><h3>Security audit logs</h3>${table(['Action','Table','Record','Actor','When'],logs.map(x=>[esc(x.action||x.event_type),esc(x.table_name),esc(x.record_id),esc(x.actor_id),x.created_at?new Date(x.created_at).toLocaleString():'—']))}</section>`;
+  }
+  $('view').innerHTML=html;bindForms();
+ }catch(e){$('view').innerHTML=`<section class="card err">${esc(e.message)}<p class="muted">The database may deny this data for your role. Check the matching RLS policy before changing permissions.</p></section>`}
+}
+function bindForms(){
+ const f=$('dataForm');
+ if(f)f.onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(f));try{
+  if(page==='Dustbins'){const {error}=await db.from('dustbins').insert({code:d.code,type:d.type,location:d.location,threshold:Number(d.threshold)});if(error)throw error}
+  if(page==='Report Complaint'){const photo=await upload(f.elements.photo.files[0]);const {error}=await db.from('complaints').insert({category:d.category,location:d.location,priority:d.priority,description:d.description,reporter_id:user.id,image_url:photo});if(error)throw error}
+  if(page==='Cleaning Tasks'){const {error}=await db.from('cleaning_tasks').insert({title:d.title,location:d.location,priority:d.priority,source:'manual'});if(error)throw error}
+  if(page==='Incidents & AI Alerts'){const {error}=await db.from('incidents').insert({camera:d.camera,location:d.location,category:d.category,confidence:d.confidence?Number(d.confidence):null,source:'manual',status:'Under Review'});if(error)throw error}
+  await render();message('Saved successfully.',false);
+ }catch(x){message(x.message)}
+ };
+ const af=$('adminForm');if(af)af.onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(af));const out=$('adminMsg');out.textContent='Creating account…';out.className='muted';
+  try{const {data,error}=await db.functions.invoke('create-admin',{body:{name:d.name,email:d.email,dept:d.dept,temporaryPassword:d.temporaryPassword}});if(error)throw error;if(data?.error)throw new Error(data.error);out.textContent=`Admin account created for ${data.user.email}. Share the temporary password securely.`;out.className='ok';af.reset();}
+  catch(x){out.textContent=x.message||'Could not create Admin account.';out.className='err'}
+ };
+ document.querySelectorAll('[data-assign]').forEach(b=>b.onclick=async()=>{const id=b.dataset.assign,assignee=document.querySelector(`[data-assignee="${id}"]`).value;const {error}=await db.from('cleaning_tasks').update({assignee_id:assignee||null}).eq('id',id);if(error)message(error.message);else{await render();message('Task assignment saved.',false)}});
+ document.querySelectorAll('[data-save-task]').forEach(b=>b.onclick=async()=>{const id=b.dataset.saveTask,status=document.querySelector(`[data-task-status="${id}"]`).value,file=document.querySelector(`[data-task-photo="${id}"]`).files[0];try{const path=await upload(file);const update={status};if(path)update.after_image_url=path;const {error}=await db.from('cleaning_tasks').update(update).eq('id',id);if(error)throw error;await render();message('Task updated.',false)}catch(x){message(x.message)}});
+ document.querySelectorAll('[data-save-complaint]').forEach(b=>b.onclick=async()=>{const id=b.dataset.saveComplaint,status=document.querySelector(`[data-complaint-status="${id}"]`).value;const {error}=await db.from('complaints').update({status}).eq('id',id);if(error)message(error.message);else{await render();message('Complaint status updated.',false)}});
+}
+(async()=>{
+ if(!configured){$('connectionStatus').textContent='Supabase configuration is missing.';return}
+ $('connectionStatus').textContent='Supabase configuration loaded.';
+ const {data:{session},error}=await db.auth.getSession();if(error){$('connectionStatus').textContent=error.message;return}
+ if(session){try{await start()}catch(e){$('authMsg').textContent=e.message}}
+ db.auth.onAuthStateChange(async(event,session)=>{if(event==='SIGNED_IN'&&session&&!profile){try{await start()}catch(e){$('authMsg').textContent=e.message}}if(event==='SIGNED_OUT'){user=null;profile=null;$('app').classList.add('hidden');$('auth').classList.remove('hidden')}});
+})();
 </script></body></html>
