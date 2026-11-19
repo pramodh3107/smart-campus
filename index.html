@@ -8,8 +8,8 @@
 <div id="app" class="shell hidden"><aside><div class="brand"><i>🌿</i>SMART<br> CAMPUS</div><nav id="nav"></nav><div class="me"><b id="who"></b><div id="role"></div><button class="small" id="logout">Sign out</button></div></aside><main class="content"><div class="banner"><h2 id="pageTitle">Dashboard</h2><div>A Cleaner Campus. A Smarter Future.</div></div><div id="view"></div><p id="msg" class="err"></p></main></div>
 <script>
 // Replace these two placeholders with your Supabase Project URL and Publishable key.
-const SUPABASE_URL='https://bvkeuhmycguevfmwmgay.supabase.co;'
-const SUPABASE_PUBLISHABLE_KEY='sb_publishable_K4ETzA54Pct3Y8A5wYWq6g_co4s2Dvy;'
+const SUPABASE_URL='https://bvkeuhmycguevfmwmgay.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_K4ETzA54Pct3Y8A5wYWq6g_co4s2Dvy';
 const configured=SUPABASE_URL.startsWith('https://') && SUPABASE_PUBLISHABLE_KEY.startsWith('sb_publishable_');
 const db=configured?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
 let user=null,profile=null,page='Dashboard',signup=false;
