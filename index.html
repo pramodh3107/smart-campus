@@ -45,6 +45,11 @@ html{scroll-behavior:smooth;scroll-padding-top:86px}#landing{min-height:100vh;ba
 #landing .feature-card{background:rgba(248,255,249,.94);border-color:rgba(220,252,231,.5);backdrop-filter:blur(8px)}
 #landing .how-card{background:rgba(235,250,238,.92);border-color:rgba(220,252,231,.5);backdrop-filter:blur(8px)}
 #landing .final-cta{background:rgba(235,250,238,.94);backdrop-filter:blur(10px)}
+/* Improve contrast on the light cards over the forest background */
+#landing .feature-card h3,#landing .how-card h3{color:#14532d}
+#landing .feature-card p,#landing .how-card p{color:#405447}
+#landing .final-cta h2{color:#14532d}
+#landing .final-cta p{color:#405447}
 #landing .site-footer{background:rgba(3,20,11,.94)}
 @media(max-width:620px){#landing{background-attachment:scroll}}
 
@@ -68,7 +73,9 @@ html{scroll-behavior:smooth;scroll-padding-top:86px}#landing{min-height:100vh;ba
   <form id="authForm"><div id="signupFields" class="hidden"><input name="name" placeholder="Full name"><p class="muted">Public registration creates a Student account. Staff roles are assigned by an administrator.</p><input name="dept" placeholder="Department"></div>
    <input name="email" type="email" placeholder="Email" required><input name="password" type="password" placeholder="Password (minimum 8 characters)" minlength="8" required>
    <p id="authMsg" class="err"></p><button class="primary" id="authSubmit" style="width:100%">Sign in</button>
-  </form><p><a href="#" id="authSwitch">New here? Register</a></p><p class="muted" id="connectionStatus">Connecting to campus services…</p>
+  </form><p><a href="#" id="authSwitch">New here? Register</a></p>
+  <p><button type="button" class="secondary" id="backHome">← Back to Home</button></p>
+  <p class="muted" id="connectionStatus">Connecting to campus services…</p>
  </section>
 </div>
 <div id="app" class="shell hidden">
@@ -97,6 +104,7 @@ document.querySelectorAll('[data-open-auth]').forEach(b=>b.addEventListener('cli
 $('footerYear').textContent=new Date().getFullYear();
 function authMode(reg){signup=reg;$('authTitle').textContent=reg?'Create student account':'Welcome back';$('authSub').textContent=reg?'Join the campus cleanliness effort':'Sign in to continue';$('signupFields').classList.toggle('hidden',!reg);$('authSubmit').textContent=reg?'Register':'Sign in';$('authSwitch').textContent=reg?'Have an account? Login':'New here? Register';$('authMsg').textContent=''}
 $('authSwitch').onclick=e=>{e.preventDefault();authMode(!signup)};
+$('backHome').onclick=()=>showLanding();
 $('authForm').onsubmit=async e=>{
  e.preventDefault();if(!configured){$('authMsg').textContent='Supabase configuration is missing.';return}
  const f=new FormData(e.target),email=String(f.get('email')).trim(),password=String(f.get('password'));$('authMsg').textContent='Please wait…';
@@ -108,13 +116,13 @@ $('authForm').onsubmit=async e=>{
 };
 $('logout').onclick=async()=>{await db.auth.signOut();user=null;profile=null;showLanding()};
 const rolePages={
- super_admin:['Dashboard','Create Admin','Dustbins','Complaints','Cleaning Tasks','Incidents & AI Alerts','Rewards','Notifications','Users','Audit Logs'],
- admin:['Dashboard','Dustbins','Complaints','Cleaning Tasks','Incidents & AI Alerts','Rewards','Notifications','Users'],
- student:['Dashboard','Dustbins','Report Complaint','My Complaints','Rewards','Notifications'],
- faculty:['Dashboard','Dustbins','Report Complaint','My Complaints','Cleaning Tasks','Rewards','Notifications'],
- housekeeping:['Dashboard','My Tasks','Dustbins','Notifications']
+ super_admin:['Dashboard','Create Admin','Dustbins','Dustbin Reports','Complaints','Cleaning Tasks','Incidents & AI Alerts','Rewards','Notifications','Users','Audit Logs'],
+ admin:['Dashboard','Dustbins','Dustbin Reports','Complaints','Cleaning Tasks','Incidents & AI Alerts','Rewards','Notifications','Users'],
+ student:['Dashboard','Dustbins','Report Dustbin Fullness','Report Complaint','My Complaints','Rewards','Notifications'],
+ faculty:['Dashboard','Dustbins','Report Dustbin Fullness','Report Complaint','My Complaints','Cleaning Tasks','Rewards','Notifications'],
+ housekeeping:['Dashboard','My Tasks','Dustbins','Dustbin Reports','Notifications']
 };
-const icons={'Dashboard':'📊','Create Admin':'🛡️','Dustbins':'🗑️','Complaints':'📝','Report Complaint':'✍️','My Complaints':'📋','Cleaning Tasks':'🧹','My Tasks':'🧹','Incidents & AI Alerts':'📹','Rewards':'🏆','Notifications':'🔔','Users':'👥','Audit Logs':'🔐'};
+const icons={'Dashboard':'📊','Create Admin':'🛡️','Dustbins':'🗑️','Dustbin Reports':'📷','Report Dustbin Fullness':'📸','Complaints':'📝','Report Complaint':'✍️','My Complaints':'📋','Cleaning Tasks':'🧹','My Tasks':'🧹','Incidents & AI Alerts':'📹','Rewards':'🏆','Notifications':'🔔','Users':'👥','Audit Logs':'🔐'};
 function shell(){
  $('landing').classList.add('hidden');$('auth').classList.add('hidden');$('app').classList.remove('hidden');$('who').textContent=profile?.name||user?.email||'Campus user';$('role').textContent=roleLabel();
  const allowed=rolePages[profile?.role]||rolePages.student;
@@ -162,7 +170,19 @@ async function render(){
   }
   if(page==='Dustbins'){
    const bins=await rows('dustbins');html=(isAdmin()?formCard('Register dustbin','<input name="code" placeholder="Bin ID" required><select name="type"><option value="dry">Dry</option><option value="wet">Wet</option><option value="general">General</option></select><input name="location" placeholder="Location" required><input name="threshold" type="number" value="80" min="20" max="100">'): '')+
-   `<section class="card"><h3>Campus dustbins</h3>${table(['Bin','Type','Location','Fill','Status','Last collected'],bins.map(x=>[esc(x.code),esc(x.type),esc(x.location),`${x.fill}%`,esc(x.status),x.last_collected?new Date(x.last_collected).toLocaleString():'—']))}</section>`;
+   `<section class="card"><h3>Campus dustbins</h3><p class="muted">Official fill levels are updated after a staff member verifies a photo report.</p>${table(['Bin','Type','Location','Verified fill','Status','Last collected'],bins.map(x=>[esc(x.code),esc(x.type),esc(x.location),`${x.fill}%`,esc(x.status),x.last_collected?new Date(x.last_collected).toLocaleString():'—']))}</section>`;
+  }
+  if(page==='Report Dustbin Fullness'){
+   const bins=await rows('dustbins');const reports=await rows('dustbin_fill_reports');
+   const options=bins.map(x=>`<option value="${esc(x.id)}">${esc(x.code)} — ${esc(x.location)}</option>`).join('');
+   const own=reports.filter(x=>x.reporter_id===user.id);const reportRows=[];
+   for(const r of own)reportRows.push([esc(r.bin_code),`${r.reported_fill}%`,await signedPhoto(r.photo_path),esc(r.status),r.created_at?new Date(r.created_at).toLocaleString():'—']);
+   html=`<section class="card"><h3>Report dustbin fullness</h3><p class="muted">Choose the dustbin, estimate how full it is, and upload a clear photograph. Your report stays pending until housekeeping or an administrator verifies it.</p><form id="dustbinReportForm" class="row"><select name="dustbin_id" required><option value="">Select a dustbin</option>${options}</select><select name="reported_fill" required><option value="">Estimated fullness</option><option value="0">0% — Empty</option><option value="25">25% — One-quarter</option><option value="50">50% — Half-full</option><option value="75">75% — Three-quarters</option><option value="100">100% — Full</option></select><input type="file" name="photo" accept="image/jpeg,image/png,image/webp" capture="environment" required><button class="primary">Submit photo report</button></form><p class="muted">Photo formats: JPG, PNG or WebP. Maximum size: 5 MB.</p><p id="dustbinReportMsg" class="muted"></p></section><section class="card"><h3>My dustbin reports</h3>${table(['Dustbin','Estimated fullness','Photo','Review status','Submitted'],reportRows)}</section>`;
+  }
+  if(page==='Dustbin Reports'){
+   const reports=await rows('dustbin_fill_reports');const reportRows=[];
+   for(const r of reports){const actions=r.status==='pending'?`<div class="actions"><button class="small" data-review-bin="${r.id}" data-decision="verified">Verify & update level</button><button class="small" data-review-bin="${r.id}" data-decision="rejected">Reject</button></div>`:esc(r.staff_notes||'—');reportRows.push([esc(r.bin_code),esc(r.location),`${r.reported_fill}%`,await signedPhoto(r.photo_path),esc(r.reporter_id),esc(r.status),r.created_at?new Date(r.created_at).toLocaleString():'—',actions]);}
+   html=`<section class="card"><h3>Student dustbin photo reports</h3><p class="muted">Review the photograph before verifying the reported fullness. Only verified reports update the official dustbin level.</p>${table(['Dustbin','Location','Reported fullness','Evidence','Reporter ID','Status','Submitted','Review'],reportRows)}</section>`;
   }
   if(page==='Report Complaint'){
    html=formCard('Report a campus issue','<select name="category"><option>Littering</option><option>Overflowing dustbin</option><option>Improper segregation</option><option>Poor drainage</option><option>Rainwater accumulation</option><option>Unclean washroom</option><option>Other</option></select><input name="location" placeholder="Location" required><select name="priority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select><textarea name="description" placeholder="Describe the issue" required></textarea><input type="file" name="photo" accept="image/png,image/jpeg,image/webp">');
@@ -217,6 +237,8 @@ function bindForms(){
   await render();message('Saved successfully.',false);
  }catch(x){message(x.message)}
  };
+ const brf=$('dustbinReportForm');if(brf)brf.onsubmit=async e=>{e.preventDefault();const submit=brf.querySelector('button[type=submit],button:not([type])');const out=$('dustbinReportMsg');if(out)out.textContent='Uploading photo and submitting report…';if(submit)submit.disabled=true;try{const d=Object.fromEntries(new FormData(brf));const file=brf.elements.photo.files[0];if(!file)throw new Error('Please attach a photo of the dustbin.');const {data:bin,error:binError}=await db.from('dustbins').select('id,code,location').eq('id',d.dustbin_id).single();if(binError)throw binError;const photoPath=await upload(file);const {error}=await db.from('dustbin_fill_reports').insert({dustbin_id:String(bin.id),bin_code:bin.code,location:bin.location,reported_fill:Number(d.reported_fill),photo_path:photoPath,reporter_id:user.id,status:'pending'});if(error)throw error;await render();message('Photo report submitted. It is pending staff verification.',false);}catch(x){if(out)out.textContent=x.message;else message(x.message);}finally{if(submit)submit.disabled=false;}};
+ document.querySelectorAll('[data-review-bin]').forEach(b=>b.onclick=async()=>{const id=b.dataset.reviewBin,decision=b.dataset.decision;const note=decision==='rejected'?(prompt('Reason for rejecting this report (optional):')||'') : '';b.disabled=true;try{const {error}=await db.rpc('review_dustbin_fill_report',{p_report_id:Number(id),p_decision:decision,p_staff_notes:note});if(error)throw error;await render();message(decision==='verified'?'Report verified. Official dustbin fullness has been updated.':'Report rejected.',false);}catch(x){message(x.message);b.disabled=false;}});
  const af=$('adminForm');if(af)af.onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(af));const out=$('adminMsg');out.textContent='Creating account…';out.className='muted';
   try{const {data,error}=await db.functions.invoke('create-admin',{body:{name:d.name,email:d.email,dept:d.dept,temporaryPassword:d.temporaryPassword}});if(error)throw error;if(data?.error)throw new Error(data.error);out.textContent=`Admin account created for ${data.user.email}. Share the temporary password securely.`;out.className='ok';af.reset();}
   catch(x){out.textContent=x.message||'Could not create Admin account.';out.className='err'}
