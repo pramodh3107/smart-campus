@@ -159,7 +159,11 @@ body:not(:has(#landing)) .shell:before{content:"";position:fixed;z-index:-1;inse
   <form id="authForm"><div id="signupFields" class="hidden"><input name="name" placeholder="Full name"><p class="muted">Public registration creates a Student account. Staff roles are assigned by an administrator.</p><input name="dept" placeholder="Department"></div>
    <input name="email" type="email" placeholder="Email" required><input name="password" type="password" placeholder="Password (minimum 8 characters)" minlength="8" required>
    <p id="authMsg" class="err"></p><button class="primary" id="authSubmit" style="width:100%">Sign in</button>
-  </form><p><a href="#" id="authSwitch">New here? Register</a></p>
+  </form>
+  <p id="forgotWrap"><a href="#" id="forgotPassword">Forgot password?</a></p>
+  <form id="recoveryForm" class="hidden"><p class="muted">Enter the email address registered with your Smart Campus account. We'll send you a secure password-reset link.</p><input name="email" type="email" placeholder="Registered email address" required><p id="recoveryMsg" class="muted"></p><button class="primary" style="width:100%">Send recovery link</button><p><a href="#" id="backToLogin">← Back to login</a></p></form>
+  <form id="updatePasswordForm" class="hidden"><p class="muted">Choose a new password for your account.</p><input name="password" type="password" placeholder="New password (minimum 8 characters)" minlength="8" required><input name="confirmPassword" type="password" placeholder="Confirm new password" minlength="8" required><p id="updatePasswordMsg" class="muted"></p><button class="primary" style="width:100%">Update password</button></form>
+  <p id="authSwitchWrap"><a href="#" id="authSwitch">New here? Register</a></p>
   <p><button type="button" class="secondary" id="backHome">← Back to Home</button></p>
   <p class="muted" id="connectionStatus">Connecting to campus services…</p>
  </section>
@@ -192,9 +196,15 @@ function showLanding(){ $('landing').classList.remove('hidden'); $('auth').class
 function showAuth(reg=false){ $('landing').classList.add('hidden'); $('app').classList.add('hidden'); $('auth').classList.remove('hidden'); authMode(reg); window.scrollTo({top:0,behavior:'instant'}); }
 document.querySelectorAll('[data-open-auth]').forEach(b=>b.addEventListener('click',()=>showAuth(b.dataset.openAuth==='signup')));
 $('footerYear').textContent=new Date().getFullYear();
-function authMode(reg){signup=reg;$('authTitle').textContent=reg?'Create student account':'Welcome back';$('authSub').textContent=reg?'Join the campus cleanliness effort':'Sign in to continue';$('signupFields').classList.toggle('hidden',!reg);$('authSubmit').textContent=reg?'Register':'Sign in';$('authSwitch').textContent=reg?'Have an account? Login':'New here? Register';$('authMsg').textContent=''}
+function authMode(reg){signup=reg;$('authTitle').textContent=reg?'Create student account':'Welcome back';$('authSub').textContent=reg?'Join the campus cleanliness effort':'Sign in to continue';$('signupFields').classList.toggle('hidden',!reg);$('authSubmit').textContent=reg?'Register':'Sign in';$('authSwitch').textContent=reg?'Have an account? Login':'New here? Register';$('authMsg').textContent='';$('authForm').classList.remove('hidden');$('recoveryForm').classList.add('hidden');$('updatePasswordForm').classList.add('hidden');$('forgotWrap').classList.toggle('hidden',reg);$('authSwitchWrap').classList.remove('hidden')}
+function showRecoveryForm(){showAuth(false);$('authTitle').textContent='Reset your password';$('authSub').textContent='Recover access to your Smart Campus account';$('authForm').classList.add('hidden');$('recoveryForm').classList.remove('hidden');$('updatePasswordForm').classList.add('hidden');$('forgotWrap').classList.add('hidden');$('authSwitchWrap').classList.add('hidden');$('recoveryMsg').textContent=''}
+function showUpdatePasswordForm(){showAuth(false);$('authTitle').textContent='Choose a new password';$('authSub').textContent='Your account recovery link has been verified';$('authForm').classList.add('hidden');$('recoveryForm').classList.add('hidden');$('updatePasswordForm').classList.remove('hidden');$('forgotWrap').classList.add('hidden');$('authSwitchWrap').classList.add('hidden')}
 $('authSwitch').onclick=e=>{e.preventDefault();authMode(!signup)};
+$('forgotPassword').onclick=e=>{e.preventDefault();showRecoveryForm()};
+$('backToLogin').onclick=e=>{e.preventDefault();authMode(false)};
 $('backHome').onclick=()=>showLanding();
+$('recoveryForm').onsubmit=async e=>{e.preventDefault();const email=String(new FormData(e.target).get('email')||'').trim();const out=$('recoveryMsg');out.textContent='Sending recovery link…';out.className='muted';try{const redirectTo=window.location.origin+window.location.pathname+'?reset=1';const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo});if(error)throw error;out.textContent='If an account exists for that email, a password-reset link has been sent. Check your inbox and spam folder.';out.className='ok';}catch(x){out.textContent=x.message||'Could not send recovery email.';out.className='err'}};
+$('updatePasswordForm').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const out=$('updatePasswordMsg');if(String(d.password).length<8){out.textContent='Use at least 8 characters.';out.className='err';return}if(d.password!==d.confirmPassword){out.textContent='The passwords do not match.';out.className='err';return}out.textContent='Updating password…';out.className='muted';try{const {error}=await db.auth.updateUser({password:String(d.password)});if(error)throw error;out.textContent='Password updated successfully. You can now sign in with your new password.';out.className='ok';e.target.reset();await db.auth.signOut();showAuth(false);}catch(x){out.textContent=x.message||'Could not update password.';out.className='err'}};
 $('authForm').onsubmit=async e=>{
  e.preventDefault();if(!configured){$('authMsg').textContent='Supabase configuration is missing.';return}
  const f=new FormData(e.target),email=String(f.get('email')).trim(),password=String(f.get('password'));$('authMsg').textContent='Please wait…';
@@ -395,6 +405,6 @@ function bindForms(){
  $('connectionStatus').textContent='Supabase configuration loaded.';
  const {data:{session},error}=await db.auth.getSession();if(error){$('connectionStatus').textContent=error.message;return}
  if(session){try{await start()}catch(e){$('authMsg').textContent=e.message;showLanding()}}else{showLanding()}
- db.auth.onAuthStateChange(async(event,session)=>{if(event==='SIGNED_IN'&&session&&!profile){try{await start()}catch(e){$('authMsg').textContent=e.message}}if(event==='SIGNED_OUT'){user=null;profile=null;showLanding()}});
+ db.auth.onAuthStateChange(async(event,session)=>{if(event==='PASSWORD_RECOVERY'){showUpdatePasswordForm();return}if(event==='SIGNED_IN'&&session&&!profile){try{await start()}catch(e){$('authMsg').textContent=e.message}}if(event==='SIGNED_OUT'){user=null;profile=null;showLanding()}});
 })();
 </script></body></html>
