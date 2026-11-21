@@ -139,6 +139,24 @@ body:not(:has(#landing)) .shell:before{content:"";position:fixed;z-index:-1;inse
 .shell.sidebar-collapsed .brand{justify-content:center;margin:0 auto 12px}.shell.sidebar-collapsed .brand-word{display:none}.shell.sidebar-collapsed .brand-mark{width:44px;height:44px;flex-basis:44px}.shell.sidebar-collapsed .sidebar-control{justify-content:center;margin-left:0}.shell.sidebar-collapsed .sidebar-toggle{width:42px}
 @media(max-width:800px){.user-chip{max-width:180px;padding:6px}.user-avatar{width:32px;height:32px;flex-basis:32px}.user-chip-copy strong,.user-chip-copy span{max-width:90px}.user-chip button{font-size:0;padding:7px}.user-chip button:after{content:"↪";font-size:14px}.sidebar-control{display:none}.brand-row{margin-bottom:18px}.banner{display:flex;align-items:center;gap:12px;padding:17px}.banner-tools{gap:10px}.page-back{width:42px;height:42px;flex-basis:42px}.breadcrumbs{font-size:11px}.banner-copy{min-width:0}.banner h2{font-size:22px}.brand-word{font-size:16px}}
 
+
+/* Smart Campus AI CCTV prototype additions */
+.ai-mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:14px 0}
+.ai-panel{border:1px solid var(--line,#dce7df);border-radius:16px;padding:16px;background:var(--surface,#fff);min-width:0}
+.ai-panel h3{margin:0 0 8px}.ai-muted{font-size:13px;color:var(--muted,#68756d);line-height:1.5}
+.ai-camera-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-top:14px}
+.ai-camera{border:1px solid var(--line,#dce7df);border-radius:12px;padding:12px;background:linear-gradient(145deg,#f5faf6,#fff);min-height:90px}
+.ai-camera strong{display:block;font-size:13px;margin-bottom:6px}.ai-camera span{font-size:11px;color:var(--muted,#68756d)}
+.ai-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#d69b32;margin-right:6px}
+.ai-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.ai-actions button{min-height:40px}
+.ai-field{display:flex;flex-direction:column;gap:6px;min-width:0}.ai-field label{font-size:13px;font-weight:650}
+.ai-field input,.ai-field select{width:100%;min-width:0}
+.ai-banner{padding:12px 14px;border-radius:12px;background:#f1f7f2;border:1px solid #d5e7d8;color:#315c3b;font-size:13px;line-height:1.5;margin:10px 0}
+.ai-result{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;background:#f7faf8;border:1px solid #e1ebe3;padding:12px;border-radius:12px;max-height:260px;overflow:auto}
+.ai-tag{display:inline-block;border-radius:999px;padding:4px 8px;background:#edf5ee;color:#356b43;font-size:11px;font-weight:700}
+.ai-danger{background:#fff6e8;border-color:#f0dfbd;color:#795a20}
+@media(max-width:600px){.ai-mode-grid{grid-template-columns:1fr}.ai-actions button{flex:1 1 100%}}
+
 </style></head>
 <body>
 <div id="landing">
@@ -179,7 +197,7 @@ const SUPABASE_URL='https://bvkeuhmycguevfmwmgay.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_K4ETzA54Pct3Y8A5wYWq6g_co4s2Dvy';
 const configured=SUPABASE_URL.startsWith('https://')&&SUPABASE_PUBLISHABLE_KEY.startsWith('sb_publishable_');
 const db=configured?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
-let user=null,profile=null,page='Dashboard',signup=false;
+let user=null,profile=null,page='Dashboard',signup=false; let aiLastResult=null;
 const pageHistory=[];
 function navigateTo(next){if(!next||next===page)return;pageHistory.push(page);page=next;render()}
 function goBack(){const previous=pageHistory.pop();if(previous&&(rolePages[profile?.role]||rolePages.student).includes(previous)){page=previous;render()}else if(page!=='Dashboard'&&(rolePages[profile?.role]||rolePages.student).includes('Dashboard')){page='Dashboard';render()}else{message('You are already at the first page.',false)}}
@@ -236,13 +254,13 @@ $('authForm').onsubmit=async e=>{
 const signOut=async()=>{await db.auth.signOut();user=null;profile=null;showLanding()};$('logout').onclick=signOut;document.addEventListener('click',e=>{if(e.target.closest('#logoutDash'))signOut()});
 $('menuToggle').onclick=()=>document.body.classList.add('menu-open');$('closeMenu').onclick=()=>document.body.classList.remove('menu-open');$('sidebarToggle').onclick=()=>{const collapsed=$('app').classList.toggle('sidebar-collapsed');$('sidebarToggle').textContent=collapsed?'»»':'««';$('sidebarToggle').title=collapsed?'Expand sidebar':'Collapse sidebar';$('sidebarToggle').setAttribute('aria-label',collapsed?'Expand sidebar':'Collapse sidebar')};$('pageBack').onclick=goBack;document.addEventListener('click',e=>{const dash=e.target.closest('[data-dash-page]');if(dash){const dest=dash.dataset.dashPage;if((rolePages[profile?.role]||rolePages.student).includes(dest)){navigateTo(dest)}else message('This section is not available for your account.');}if(e.target.closest('[data-page]')||(document.body.classList.contains('menu-open')&&!e.target.closest('#sidebar')&&!e.target.closest('#menuToggle')))document.body.classList.remove('menu-open')});document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.dash-kpi[data-dash-page]')){e.preventDefault();e.target.click()}});
 const rolePages={
- super_admin:['Dashboard','Student ID Verification','Create Admin','Manage Cleaning Staff','Dustbins','Dustbin Reports','Complaints','Cleaning Tasks','Incidents & AI Alerts','Rewards','Notifications','Users','Audit Logs'],
- admin:['Dashboard','Student ID Verification','Manage Cleaning Staff','Dustbins','Dustbin Reports','Complaints','Cleaning Tasks','Incidents & AI Alerts','Rewards','Notifications','Users'],
+ super_admin:['Dashboard','Student ID Verification','Create Admin','Manage Cleaning Staff','Dustbins','Dustbin Reports','Complaints','Cleaning Tasks','Incidents & AI Alerts','AI CCTV Monitoring','Rewards','Notifications','Users','Audit Logs'],
+ admin:['Dashboard','Student ID Verification','Manage Cleaning Staff','Dustbins','Dustbin Reports','Complaints','Cleaning Tasks','Incidents & AI Alerts','AI CCTV Monitoring','Rewards','Notifications','Users'],
  student:['Dashboard','My ID Verification','Dustbins','Report Dustbin Fullness','Report Complaint','My Complaints','Rewards','Notifications'],
  faculty:['Dashboard','Dustbins','Report Dustbin Fullness','Report Complaint','My Complaints','Cleaning Tasks','Rewards','Notifications'],
  housekeeping:['Dashboard','My Tasks','Dustbins','Dustbin Reports','Notifications']
 };
-const icons={'My ID Verification':'🪪','Student ID Verification':'🛂','Dashboard':'📊','Create Admin':'🛡️','Manage Cleaning Staff':'👷','Dustbins':'🗑️','Dustbin Reports':'📷','Report Dustbin Fullness':'📸','Complaints':'📝','Report Complaint':'✍️','My Complaints':'📋','Cleaning Tasks':'🧹','My Tasks':'🧹','Incidents & AI Alerts':'📹','Rewards':'🏆','Notifications':'🔔','Users':'👥','Audit Logs':'🔐'};
+const icons={'My ID Verification':'🪪','Student ID Verification':'🛂','Dashboard':'📊','Create Admin':'🛡️','Manage Cleaning Staff':'👷','Dustbins':'🗑️','Dustbin Reports':'📷','Report Dustbin Fullness':'📸','Complaints':'📝','Report Complaint':'✍️','My Complaints':'📋','Cleaning Tasks':'🧹','My Tasks':'🧹','Incidents & AI Alerts':'📹','AI CCTV Monitoring':'🧠','Rewards':'🏆','Notifications':'🔔','Users':'👥','Audit Logs':'🔐'};
 function shell(){
  $('landing').classList.add('hidden');$('auth').classList.add('hidden');$('app').classList.remove('hidden');$('who').textContent=profile?.name||user?.email||'Campus user';$('userEmail').textContent=user?.email||'';$('role').textContent=roleLabel();$('userInitials').textContent=(profile?.name||user?.email||'U').split(/[\s@._-]+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');
  const allowed=rolePages[profile?.role]||rolePages.student;
@@ -378,6 +396,34 @@ async function render(){
    const inc=await rows('incidents');html=(isAdmin()?formCard('Add incident for human review','<input name="camera" placeholder="Camera ID" required><input name="location" placeholder="Location" required><input name="category" value="Littering" required><input name="confidence" type="number" step="0.001" min="0" max="1" placeholder="Confidence (optional)">'): '')+
    `<section class="card"><h3>Incident review queue</h3><p class="muted">Incident records are review items only. This website does not run an AI detection model.</p>${table(['Camera','Location','Category','Confidence','Source','Status'],inc.map(x=>[esc(x.camera),esc(x.location),esc(x.category),x.confidence??'—',esc(x.source),esc(x.status)]))}</section>`;
   }
+  if(page==='AI CCTV Monitoring'){
+   const inc=await rows('incidents');
+   let challans=[],challanReady=true;
+   try{challans=await rows('demo_challans')}catch(e){challanReady=false;}
+   const cameras=Array.from({length:33},(_,i)=>`<div class="ai-camera"><strong>📹 DEMO-CAM-${String(i+1).padStart(2,'0')}</strong><span><i class="ai-dot"></i>Not connected · Prototype</span></div>`).join('');
+   const incidentRows=inc.slice(0,30).map(x=>[
+    esc(x.camera),esc(x.location),esc(x.category),x.confidence==null?'—':`${Math.round(Number(x.confidence)*100)}%`,esc(x.source),esc(x.status),
+    `<div class="ai-actions"><button class="small" data-ai-review="${esc(x.id)}" data-ai-category="${esc(x.category)}">Mark reviewed</button>${x.source==='simulation'?`<button class="small" data-ai-challan="${esc(x.id)}" data-ai-violation="${esc(x.category)}">Create demo challan</button>`:''}</div>`
+   ]);
+   const challanRows=challans.slice(0,20).map(c=>[esc(c.demo_person),esc(c.violation),`₹${Number(c.amount).toFixed(0)}`,esc(c.status),c.created_at?new Date(c.created_at).toLocaleString():'—']);
+   const resultHtml=aiLastResult?`<div class="ai-result">${esc(JSON.stringify(aiLastResult,null,2))}</div>`:'<p class="ai-muted">No AI video has been analysed in this session yet.</p>';
+   html=`
+   <section class="card"><h3>AI CCTV Monitoring</h3><p class="muted">Prototype module · No college CCTV streams are connected. The camera tiles below are placeholders, not live feeds.</p>
+    <div class="ai-banner"><strong>Two demonstration modes:</strong> Actual AI uses a pretrained object-detection model on an uploaded clip. Simulation creates clearly labelled sample violations. Object detection does not prove littering, spitting, dumping, vandalism or a person's identity.</div>
+    <div class="ai-mode-grid">
+     <div class="ai-panel"><span class="ai-tag">ACTUAL AI</span><h3 style="margin-top:10px">Analyse a sample video</h3><p class="ai-muted">YOLO11n detects supported visible objects such as people, bottles and cups. It does not classify violations.</p>
+      <div class="ai-field" style="margin-top:10px"><label for="aiVideo">Upload sample CCTV-style video (MP4 recommended)</label><input id="aiVideo" type="file" accept="video/mp4,video/webm,video/quicktime"></div>
+      <div class="ai-field" style="margin-top:10px"><label for="aiConfidence">Detection confidence threshold</label><select id="aiConfidence"><option value="0.25">25% · More detections</option><option value="0.4" selected>40% · Balanced</option><option value="0.6">60% · Higher confidence</option></select></div>
+      <div class="ai-actions"><button class="primary" type="button" id="runAiVideo">Analyse video in browser</button></div><p id="aiVideoStatus" class="ai-muted">No AI hosting account required. The model loads in this browser; your video is not uploaded to an AI server.</p>
+     </div>
+     <div class="ai-panel"><span class="ai-tag">SIMULATION</span><h3 style="margin-top:10px">Generate demonstration incidents</h3><p class="ai-muted">Creates four synthetic incidents for littering, spitting, dumping and vandalism in your existing Supabase incidents table.</p><div class="ai-banner ai-danger">All generated events are demo records. They do not represent real students, real CCTV footage or confirmed violations.</div><div class="ai-actions"><button class="primary" type="button" id="generateAiSimulation">Generate 4 sample incidents</button></div><p id="aiSimulationStatus" class="ai-muted">Simulation does not call the AI model.</p></div>
+    </div>
+    <div class="ai-panel"><h3>AI analysis result</h3>${resultHtml}</div>
+   </section>
+   <section class="card"><h3>Camera inventory · 33 prototype placeholders</h3><p class="muted">All cameras are marked not connected until a future authorised integration. No RTSP addresses or credentials are used by this prototype.</p><div class="ai-camera-grid">${cameras}</div></section>
+   <section class="card"><h3>Incident review queue (${inc.length})</h3><p class="muted">Review observations manually. An AI object label is not a confirmed violation.</p>${table(['Camera','Location','Detection / category','Confidence','Source','Status','Actions'],incidentRows)}</section>
+   <section class="card"><h3>Provisional challans · demo only</h3><p class="muted">Demo challans use a fictional identity and illustrative amounts. They are not payable and must never be treated as real penalties.</p>${challanReady?table(['Demo identity','Violation','Illustrative amount','Status','Created'],challanRows):'<p class="ai-banner ai-danger">Run supabase/migrations/20261121_ai_cctv_prototype.sql to enable the demo challan table.</p>'}</section>`;
+  }
   if(page==='Rewards'){
    const people=await rows('profiles','points');people.sort((a,b)=>b.points-a.points);html=`<section class="card"><h3>Campus leaderboard</h3>${table(['Name','Department','Points'],people.map(x=>[esc(x.name),esc(x.dept),x.points]))}</section>`;
   }
@@ -399,8 +445,54 @@ async function render(){
   if(page==='Audit Logs'){
    const logs=await rows('audit_logs');html=`<section class="card"><h3>Security audit logs</h3>${table(['Action','Table','Record','Actor','When'],logs.map(x=>[esc(x.action||x.event_type),esc(x.table_name),esc(x.record_id),esc(x.actor_id),x.created_at?new Date(x.created_at).toLocaleString():'—']))}</section>`;
   }
-  $('view').innerHTML=html;bindForms();document.querySelectorAll('[data-dash-page]').forEach(b=>b.onclick=()=>{page=b.dataset.dashPage;render()});document.querySelectorAll('[data-count-to]').forEach(el=>{const target=Number(el.dataset.countTo);const start=performance.now(),duration=650;const tick=now=>{const t=Math.min(1,(now-start)/duration);el.textContent=Math.round(target*(1-Math.pow(1-t,3)));if(t<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)});
+  $('view').innerHTML=html;bindForms();if(page==='AI CCTV Monitoring')bindAiCctv();document.querySelectorAll('[data-dash-page]').forEach(b=>b.onclick=()=>{page=b.dataset.dashPage;render()});document.querySelectorAll('[data-count-to]').forEach(el=>{const target=Number(el.dataset.countTo);const start=performance.now(),duration=650;const tick=now=>{const t=Math.min(1,(now-start)/duration);el.textContent=Math.round(target*(1-Math.pow(1-t,3)));if(t<1)requestAnimationFrame(tick)};requestAnimationFrame(tick)});
  }catch(e){$('view').innerHTML=`<section class="card err">${esc(e.message)}<p class="muted">The database may deny this data for your role. Check the matching RLS policy before changing permissions.</p></section>`}
+}
+function bindAiCctv(){
+ const status=(id,msg)=>{const el=$(id);if(el)el.textContent=msg};
+ const loadScript=(src,id)=>new Promise((resolve,reject)=>{if(document.getElementById(id)){resolve();return}const script=document.createElement('script');script.id=id;script.src=src;script.onload=resolve;script.onerror=()=>reject(new Error('Could not load the AI model library. Check your internet connection and try again.'));document.head.appendChild(script)});
+ const sim=$('generateAiSimulation');if(sim)sim.onclick=async()=>{sim.disabled=true;status('aiSimulationStatus','Creating synthetic incidents…');try{
+  const examples=[
+   {camera:'SIM-CAM-01',location:'Library walkway · Demo',category:'Littering',confidence:0.94,source:'simulation',status:'Demo only — Awaiting review'},
+   {camera:'SIM-CAM-02',location:'Canteen entrance · Demo',category:'Spitting',confidence:0.89,source:'simulation',status:'Demo only — Awaiting review'},
+   {camera:'SIM-CAM-03',location:'Parking area · Demo',category:'Dumping',confidence:0.92,source:'simulation',status:'Demo only — Awaiting review'},
+   {camera:'SIM-CAM-04',location:'Academic block corridor · Demo',category:'Vandalism',confidence:0.87,source:'simulation',status:'Demo only — Awaiting review'}
+  ];
+  const {data,error}=await db.from('incidents').insert(examples).select('id,camera,category,source,status');if(error)throw error;
+  status('aiSimulationStatus',`${data?.length||examples.length} synthetic incidents saved to Supabase. They are labelled simulation.`);await render();message('Four simulation incidents created.',false);
+ }catch(e){status('aiSimulationStatus',e.message);message(e.message)}finally{sim.disabled=false}};
+ const run=$('runAiVideo');if(run)run.onclick=async()=>{run.disabled=true;status('aiVideoStatus','Loading the in-browser AI model…');let objectUrl=null;try{
+  const file=$('aiVideo')?.files?.[0];const confidence=Number($('aiConfidence')?.value||0.4);
+  if(!file)throw new Error('Choose an MP4 or WebM sample video first.');
+  if(file.size>40*1024*1024)throw new Error('Choose a video smaller than 40 MB for this prototype.');
+  status('aiVideoStatus','Loading TensorFlow.js and COCO-SSD model files from the public CDN…');
+  await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js','smartcampus-tfjs');
+  await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js','smartcampus-cocossd');
+  if(!window.tf||!window.cocoSsd)throw new Error('AI libraries loaded, but the model API is unavailable. Refresh and retry.');
+  status('aiVideoStatus','Loading COCO-SSD object-detection model…');
+  const model=await window.cocoSsd.load({base:'lite_mobilenet_v2'});
+  objectUrl=URL.createObjectURL(file);const video=document.createElement('video');video.muted=true;video.preload='auto';video.src=objectUrl;
+  await new Promise((resolve,reject)=>{video.onloadedmetadata=resolve;video.onerror=()=>reject(new Error('Could not read this video. Try an MP4 encoded with H.264.'))});
+  if(!Number.isFinite(video.duration)||video.duration<=0)throw new Error('The selected video has no readable duration.');
+  if(video.duration>45)throw new Error('For this prototype, choose a clip no longer than 45 seconds.');
+  const frames=8, observations={}, sampled=[];
+  for(let i=0;i<frames;i++){
+   const t=frames===1?0:(video.duration*i/(frames-1));
+   await new Promise((resolve,reject)=>{const done=()=>{video.removeEventListener('seeked',done);resolve()};video.addEventListener('seeked',done,{once:true});try{video.currentTime=t;if(Math.abs(video.currentTime-t)<0.01)resolve()}catch(e){reject(e)}});
+   const predictions=await model.detect(video);sampled.push(t);
+   for(const pred of predictions){if(Number(pred.score)<confidence)continue;const label=String(pred.class);const item=observations[label]||(observations[label]={label,count:0,max_confidence:0,sample_times_seconds:[]});item.count++;item.max_confidence=Math.max(item.max_confidence,Number(pred.score));if(!item.sample_times_seconds.includes(Number(t.toFixed(2))))item.sample_times_seconds.push(Number(t.toFixed(2)));}
+   status('aiVideoStatus',`Analysing frame ${i+1} of ${frames}…`);
+  }
+  const items=Object.values(observations).sort((a,b)=>b.count-a.count);
+  const payload={mode:'actual_ai_object_detection_in_browser',model:'COCO-SSD · Lite MobileNet v2',frames_processed:sampled.length,video_duration_seconds:Number(video.duration.toFixed(2)),observations:items,limitations:['This is actual object detection running in your browser.','The model detects supported object classes; it does not classify littering, spitting, dumping, vandalism or cleaning actions.','No face recognition or identity matching is performed.','Object observations are not proof of a violation; human review is required.']};
+  aiLastResult=payload;
+  const records=items.map(o=>({camera:'UPLOAD-CLIP-01',location:'Prototype video upload',category:`AI Observation: ${o.label}`,confidence:Number(o.max_confidence||0),source:'ai_model',status:'Under Review'}));
+  if(records.length){const {error}=await db.from('incidents').insert(records);if(error)throw error;}
+  await render();message(`AI analysed ${payload.frames_processed} sampled frames and saved ${records.length} object-observation record(s).`,false);
+  status('aiVideoStatus',`Completed · ${payload.frames_processed} frames sampled · ${records.length} object categories saved. Inference ran in this browser; video was not uploaded to an AI server.`);
+ }catch(e){status('aiVideoStatus',e.message);message(e.message)}finally{if(objectUrl)URL.revokeObjectURL(objectUrl);run.disabled=false}};
+ document.querySelectorAll('[data-ai-review]').forEach(b=>b.onclick=async()=>{try{const category=b.dataset.aiCategory||'';const next=category.startsWith('AI Observation:')?'Reviewed — object observation only':'Reviewed — demo only';const {error}=await db.from('incidents').update({status:next}).eq('id',b.dataset.aiReview);if(error)throw error;await render();message('Incident marked reviewed.',false)}catch(e){message(e.message)}});
+ document.querySelectorAll('[data-ai-challan]').forEach(b=>b.onclick=async()=>{try{const violation=b.dataset.aiViolation||'Demo violation';const amounts={Littering:100,Spitting:100,Dumping:250,Vandalism:500};const amount=amounts[violation]||100;const {error}=await db.from('demo_challans').insert({incident_id:String(b.dataset.aiChallan),demo_person:'DEMO-STUDENT-001',violation,amount,status:'Provisional — Demo only',created_by:user.id});if(error)throw error;await render();message('Provisional demo challan created. No real person or payment is involved.',false)}catch(e){message(e.message+' · Check that the prototype SQL migration has been applied.')}});
 }
 function bindForms(){
  const f=$('dataForm');
