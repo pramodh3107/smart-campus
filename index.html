@@ -279,6 +279,107 @@ input:focus,select:focus,textarea:focus{outline:3px solid #4f7cac25;border-color
 #landing .site-actions .primary,#landing .hero-actions .primary{background:linear-gradient(135deg,#4f7cac,#294c70)!important;color:#fff!important}
 #landing .hero-actions .secondary{background:#e8eff7!important;color:#294c70!important}
 
+
+/* =========================================================
+   SMART CAMPUS — complete navy / blue dashboard override
+   Keeps the public site and every authenticated screen in
+   one consistent palette. No green is used as a dominant colour.
+   ========================================================= */
+:root{
+  --g:#4f7cac!important;
+  --gd:#294c70!important;
+  --g1:#e8eff7!important;
+  --d:#172b4d!important;
+  --bg:#f4f6fa!important;
+  --m:#68778d!important;
+}
+body{background:#f4f6fa!important;color:#172b4d!important}
+
+/* Dashboard welcome / hero panel */
+.dash-hero{
+  background:
+    radial-gradient(circle at 86% 18%,rgba(143,177,211,.28),transparent 27%),
+    radial-gradient(circle at 70% 110%,rgba(242,166,90,.12),transparent 34%),
+    linear-gradient(118deg,#172b4d 0%,#294c70 58%,#4f7cac 100%)!important;
+  box-shadow:0 18px 45px rgba(23,43,77,.18)!important;
+}
+.dash-eyebrow{color:#d8e5f2!important}
+.dash-eyebrow:before{background:#f2a65a!important;box-shadow:0 0 0 5px rgba(242,166,90,.2)!important}
+.dash-hero p{color:#e1eaf3!important}
+.dash-user-avatar{background:#e8eff7!important;color:#294c70!important}
+.dash-user small{color:#d8e5f2!important}
+.dash-date{background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.25)!important}
+
+/* Sidebar brand and active states */
+aside{background:linear-gradient(180deg,#172b4d 0%,#213d60 100%)!important}
+.brand-mark,.brand i{background:linear-gradient(145deg,#6f98c1,#345d86)!important}
+.brand-word span{color:#f2a65a!important}
+nav button:hover,nav button.on{background:#4f7cac!important;color:#fff!important}
+.sidebar-toggle,.menu-toggle{background:#345d86!important}
+
+/* Dashboard statistic cards and labels */
+.dash-kpi{border-color:#e2e8f0!important;box-shadow:0 6px 20px rgba(23,43,77,.06)!important}
+.dash-kpi:hover,.dash-kpi:focus-visible{border-color:#9bb6d2!important;box-shadow:0 14px 30px rgba(23,43,77,.12)!important}
+.dash-kpi-icon,.dash-activity-icon{background:#eaf1f8!important;color:#345d86!important}
+.dash-kpi-trend,.dash-pill{background:#e8eff7!important;color:#345d86!important}
+.dash-kpi:after{background:rgba(79,124,172,.09)!important}
+.dash-kpi strong{color:#172b4d!important}
+.dash-kpi span:last-child,.dash-section-head p{color:#68778d!important}
+
+/* Charts, progress indicators and activity */
+.dash-bar-track{background:#edf2f8!important}
+.dash-bar-fill{background:linear-gradient(180deg,#8eafd0,#345d86)!important}
+.dash-dot{background:#4f7cac!important}
+.dash-bar-col small{color:#68778d!important}
+.dash-bar-col b{color:#52647b!important}
+.dash-activity-item{border-bottom-color:#e8edf3!important}
+.dash-activity-item b{color:#263b55!important}
+.dash-activity-item span{color:#78869a!important}
+.dash-quick button{border-color:#e2e8f0!important;background:#f8fafd!important;color:#294c70!important}
+.dash-quick button:hover{border-color:#9bb6d2!important;background:#eaf1f8!important}
+.dash-panel{border-color:#e2e8f0!important;box-shadow:0 6px 20px rgba(23,43,77,.05)!important}
+.dash-panel-sub,.dash-legend{color:#78869a!important}
+.dash-bars{border-bottom-color:#e5eaf1!important}
+
+/* Legacy dashboard banners and background effects */
+.banner{background:linear-gradient(115deg,#294c70,#172b4d)!important;border:1px solid rgba(255,255,255,.2)!important;box-shadow:0 14px 34px rgba(23,43,77,.14)!important}
+.banner:before,.banner:after{background:radial-gradient(circle,rgba(143,177,211,.22),transparent 72%)!important}
+body:not(:has(#landing)) .shell:before{opacity:.22!important;background:radial-gradient(ellipse at 12% 18%,rgba(79,124,172,.10),transparent 38%),radial-gradient(ellipse at 88% 78%,rgba(242,166,90,.07),transparent 42%)!important}
+
+/* Other app modules, notices, tags and AI panels */
+.ok{color:#345d86!important}
+.notice,.ai-banner{background:#eaf1f8!important;border-color:#d7e2ee!important;color:#294c70!important}
+.ai-tag{background:#e8eff7!important;color:#345d86!important}
+.ai-camera{background:linear-gradient(145deg,#f4f7fb,#fff)!important;border-color:#e2e8f0!important}
+.ai-panel{border-color:#e2e8f0!important}
+.ai-result{background:#f8fafd!important;border-color:#e2e8f0!important}
+
+/* Landing page: override older forest-specific selectors */
+#landing{background:#f4f6fa!important;background-image:none!important;color:#172b4d!important}
+#landing .site-header{background:rgba(255,255,255,.94)!important;border-bottom:1px solid #e3e9f0!important}
+#landing .site-logo{color:#294c70!important}
+#landing .site-links a{color:#52647b!important}
+#landing .site-links a:hover{color:#345d86!important}
+#landing .landing-hero h1,#landing .section-head h2{color:#172b4d!important}
+#landing .landing-hero h1 span{color:#4f7cac!important}
+#landing .landing-hero p,#landing .section-head p{color:#52647b!important}
+#landing .eyebrow{background:#e8eff7!important;color:#345d86!important}
+#landing .feature-card,#landing .how-card{background:#fff!important;border:1px solid #e2e8f0!important}
+#landing .feature-card h3,#landing .how-card h3{color:#203b5b!important}
+#landing .feature-card p,#landing .how-card p{color:#52647b!important}
+#landing .feature-icon{background:#eaf1f8!important;color:#345d86!important}
+#landing .how-number{color:#345d86!important}
+#landing .final-cta{background:linear-gradient(135deg,#eaf1f8,#f8f9fc)!important}
+#landing .final-cta h2{color:#172b4d!important}
+#landing .final-cta p{color:#52647b!important}
+#landing .about-panel{background:linear-gradient(125deg,#172b4d,#294c70)!important}
+#landing .about-point b{color:#f2a65a!important}
+#landing .site-footer{background:#14243d!important}
+
+@media(max-width:800px){
+  .mobile-topbar{background:#f4f6faed!important;color:#294c70!important;border-bottom-color:#dce4ed!important}
+}
+
 </style></head>
 <body>
 <div id="landing">
