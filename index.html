@@ -157,6 +157,128 @@ body:not(:has(#landing)) .shell:before{content:"";position:fixed;z-index:-1;inse
 .ai-danger{background:#fff6e8;border-color:#f0dfbd;color:#795a20}
 @media(max-width:600px){.ai-mode-grid{grid-template-columns:1fr}.ai-actions button{flex:1 1 100%}}
 
+
+
+/* =========================================================
+   SMART CAMPUS — refreshed navy / blue / amber visual theme
+   Replaces the forest background and reduces green to zero
+   as a dominant colour. Existing layout and functionality kept.
+   ========================================================= */
+:root{
+  --g:#4f7cac;--gd:#294c70;--g1:#e8eff7;
+  --d:#172b4d;--bg:#f4f6fa;--m:#68778d;--r:16px;
+  --sc-navy:#172b4d;--sc-blue:#4f7cac;--sc-blue-dark:#345d86;
+  --sc-pale:#eaf1f8;--sc-amber:#f2a65a;--sc-ink:#172b4d;
+}
+body{background:#f4f6fa;color:#172b4d}
+aside{background:linear-gradient(180deg,#172b4d 0%,#213d60 100%);color:#e5edf6}
+.brand i,.site-logo-mark{background:linear-gradient(135deg,#6f98c1,#345d86)}
+nav button{color:#dce6f1}
+nav button:hover,nav button.on{background:#4f7cac;color:#fff}
+.me{background:#ffffff12}
+.content{background:transparent}
+.banner{background:linear-gradient(120deg,#345d86,#172b4d);color:#fff}
+.stat{border-left-color:#4f7cac}
+.stat b{color:#172b4d}
+button.primary{background:linear-gradient(135deg,#5f8db9,#345d86);color:#fff}
+button.primary:hover{background:linear-gradient(135deg,#6f9bc5,#3d6a96)}
+button.small{background:#e8eff7;color:#294c70}
+button.secondary{background:#e8edf3;color:#263b55}
+input,select,textarea{border-color:#d7e0eb;background:#fff;color:#172b4d}
+input:focus,select:focus,textarea:focus{outline:3px solid #4f7cac25;border-color:#4f7cac}
+.auth{background:#fff}
+.hero{background:linear-gradient(145deg,#345d86,#172b4d);color:#fff}
+.ok{color:#345d86}
+.notice{background:#eaf1f8;color:#294c70}
+.tag{background:#fff2df;color:#925b1d}
+.dash-kpi:hover,.dash-kpi:focus-visible{border-color:#9bb6d2;box-shadow:0 14px 30px #172b4d18}
+.dash-kpi:focus-visible{outline-color:#4f7cac}
+.dash-kpi:after{color:#345d86}
+.mobile-topbar{background:#f4f6faed;color:#294c70;border-bottom-color:#dce4ed}
+.menu-toggle{background:#345d86}
+
+/* Public landing page */
+#landing{background:#f4f6fa!important;background-image:none!important;color:#172b4d}
+.site-header{background:#ffffffed;border-bottom-color:#e3e9f0}
+.site-logo{color:#294c70}
+.site-links a{color:#52647b}
+.site-links a:hover{color:#345d86}
+.landing-hero{background:transparent}
+.eyebrow{background:#e8eff7;color:#345d86}
+.landing-hero h1{color:#172b4d}
+.landing-hero h1 span{color:#4f7cac}
+.landing-hero p{color:#65758b}
+.hero-note{color:#78869a}
+.hero-art{background:radial-gradient(circle at 78% 18%,#7899bb 0,transparent 27%),linear-gradient(145deg,#294c70,#172b4d 68%,#345d86);box-shadow:0 24px 60px #172b4d25}
+.hero-art-top{color:#e5edf6}
+.hero-art-sub{color:#d6e2ef}
+.hero-mini{color:#294c70;background:#fff}
+.section-head h2{color:#172b4d}
+.section-head p{color:#68778d}
+.feature-card{background:#fff;border-color:#e2e8f0;box-shadow:0 8px 24px #172b4d0a}
+.feature-icon{background:#eaf1f8;color:#345d86}
+.feature-card h3{color:#203b5b}
+.feature-card p{color:#68778d}
+.how-card{background:#edf2f8;border-color:#dce5ef}
+.how-number{color:#4f7cac}
+.how-card p{color:#68778d}
+.about-panel{background:linear-gradient(125deg,#172b4d,#294c70);color:#fff}
+.about-panel p{color:#d2deeb}
+.about-point{background:#ffffff12;border-color:#ffffff24;color:#e8eff7}
+.about-point b{color:#f2a65a}
+.final-cta{background:linear-gradient(135deg,#eaf1f8,#f8f9fc)}
+.final-cta h2{color:#172b4d}
+.final-cta p{color:#68778d}
+.site-footer{background:#14243d;color:#dce6f1}
+.site-footer p{color:#aebed0}
+
+/* Supporting AI panels and status elements */
+.ai-banner{background:#edf3f9;border-color:#d9e4ef;color:#34516f}
+.ai-result{background:#f7f9fc;border-color:#e0e7ef}
+.ai-tag{background:#e8eff7;color:#345d86}
+.ai-dot{background:#f2a65a}
+@media(max-width:800px){
+ .mobile-topbar{background:#f4f6faed;color:#294c70}
+}
+
+
+
+/* Final contrast and palette corrections for the public landing page */
+#landing{background:#f4f6fa!important;background-image:none!important;color:#172b4d!important}
+#landing .site-header{background:rgba(255,255,255,.96)!important;border-bottom:1px solid #e3e9f0!important}
+#landing .site-logo{color:#294c70!important}
+#landing .site-logo-mark{background:linear-gradient(135deg,#4f7cac,#294c70)!important}
+#landing .site-links a{color:#52647b!important}
+#landing .site-links a:hover{color:#294c70!important}
+#landing .eyebrow{background:#e8eff7!important;color:#345d86!important}
+#landing .landing-hero h1{color:#172b4d!important}
+#landing .landing-hero h1 span{color:#4f7cac!important}
+#landing .landing-hero p{color:#52647b!important}
+#landing .hero-note{color:#68778d!important}
+#landing .hero-art{background:radial-gradient(circle at 78% 18%,#7899bb 0,transparent 27%),linear-gradient(145deg,#294c70,#172b4d 68%,#345d86)!important;box-shadow:0 24px 60px #172b4d25!important}
+#landing .hero-art-top{color:#e5edf6!important}
+#landing .hero-art-sub{color:#d6e2ef!important}
+#landing .hero-mini{background:#fff!important;color:#294c70!important}
+#landing .section-head h2{color:#172b4d!important}
+#landing .section-head p{color:#52647b!important}
+#landing .feature-card{background:#fff!important;border-color:#e2e8f0!important;box-shadow:0 8px 24px #172b4d0a!important}
+#landing .feature-icon{background:#eaf1f8!important;color:#345d86!important}
+#landing .feature-card h3,#landing .how-card h3{color:#203b5b!important}
+#landing .feature-card p,#landing .how-card p{color:#52647b!important}
+#landing .how-card{background:#edf2f8!important;border:1px solid #dce5ef!important}
+#landing .how-number{color:#345d86!important}
+#landing .about-panel{background:linear-gradient(125deg,#172b4d,#294c70)!important;color:#fff!important}
+#landing .about-panel p{color:#d2deeb!important}
+#landing .about-point{background:#ffffff12!important;border-color:#ffffff24!important;color:#e8eff7!important}
+#landing .about-point b{color:#f2a65a!important}
+#landing .final-cta{background:linear-gradient(135deg,#eaf1f8,#f8f9fc)!important}
+#landing .final-cta h2{color:#172b4d!important}
+#landing .final-cta p{color:#52647b!important}
+#landing .site-footer{background:#14243d!important;color:#dce6f1!important}
+#landing .site-footer p{color:#aebed0!important}
+#landing .site-actions .primary,#landing .hero-actions .primary{background:linear-gradient(135deg,#4f7cac,#294c70)!important;color:#fff!important}
+#landing .hero-actions .secondary{background:#e8eff7!important;color:#294c70!important}
+
 </style></head>
 <body>
 <div id="landing">
